@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         // Check active session
         supabase.auth.getSession().then(({ data: { session } }) => {
-            console.log("AuthContext: Initial Session Check", session);
             setSession(session);
             setUser(session?.user ?? null);
             setLoading(false);
@@ -21,7 +20,6 @@ export const AuthProvider = ({ children }) => {
 
         // Listen for changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            console.log("AuthContext: Auth Change", _event, session);
             setSession(session);
             setUser(session?.user ?? null);
             setLoading(false);
@@ -30,8 +28,37 @@ export const AuthProvider = ({ children }) => {
         return () => subscription.unsubscribe();
     }, []);
 
-    const signUp = (email, password) => {
-        return supabase.auth.signUp({ email, password });
+    /**
+     * signUp — creates Supabase auth user with metadata,
+     * then upserts the profiles row with all collected fields.
+     * The DB trigger auto-inserts full_name from raw_user_meta_data,
+     * but we also upsert to ensure location & farming_type are saved.
+     */
+    const signUp = async (email, password, metadata = {}) => {
+        const { full_name = '', location = '', farming_type = '' } = metadata;
+
+        // 1. Create the auth user (passes metadata to DB trigger)
+        const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+                data: { full_name, location, farming_type },
+            },
+        });
+
+        if (error || !data?.user) return { data, error };
+
+        // 2. Upsert profile so all fields are populated immediately
+        await supabase.from('profiles').upsert({
+            id: data.user.id,
+            email,
+            full_name,
+            location,
+            farming_type,
+            updated_at: new Date().toISOString(),
+        });
+
+        return { data, error };
     };
 
     const signIn = (email, password) => {
@@ -43,29 +70,18 @@ export const AuthProvider = ({ children }) => {
     };
 
     const signInWithGoogle = async () => {
-        console.log("AuthContext: signInWithGoogle called");
         try {
             const { data, error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
                     redirectTo: window.location.origin,
-                    skipBrowserRedirect: true
-                }
+                    skipBrowserRedirect: true,
+                },
             });
-            console.log("AuthContext: signInWithOAuth result", { data, error });
-
-            if (data?.url) {
-                alert("Redirecting to: " + data.url);
-                window.location.href = data.url;
-            } else if (error) {
-                alert("Supabase Error: " + error.message);
-            } else {
-                alert("No URL returned. Check Console.");
-            }
 
             return { data, error };
         } catch (err) {
-            console.error("AuthContext: signInWithOAuth exception", err);
+            console.error('AuthContext: signInWithOAuth exception', err);
             return { error: err };
         }
     };

@@ -14,6 +14,7 @@ import Profile from './pages/Profile';
 import Plots from './pages/Plots';
 import Settings from './pages/Settings';
 import ExpertChat from './pages/ExpertChat';
+import Marketplace from './pages/Marketplace';
 import NotFound from './pages/NotFound';
 
 const App = () => {
@@ -36,6 +37,7 @@ const App = () => {
         <Route path="/market" element={<Market />} />
         <Route path="/plots" element={<Plots />} />
         <Route path="/expert-chat" element={<ExpertChat />} />
+        <Route path="/marketplace" element={<Marketplace />} />
         <Route path="/schemes" element={<Schemes />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
