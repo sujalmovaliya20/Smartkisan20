@@ -190,5 +190,14 @@ The application will be accessible at `http://localhost:5173` (or the port shown
 | **POST** | `/api/ai/crop-health` | Upload an image for disease diagnosis. Body: Raw image binary data. |
 | **GET** | `/api/market` | Get market prices. Query params: `state`, `commodity`, `search`. |
 
+## **Screenshort**
+<img width="1898" height="817" alt="Screenshot 2026-04-05 152608" src="https://github.com/user-attachments/assets/51315c61-99ec-494a-85bc-5ee61fde0fac" />
+<img width="1904" height="882" alt="Screenshot 2026-04-05 151502" src="https://github.com/user-attachments/assets/a7ceb51f-188d-4ee2-9bec-b86584f90702" />
+<img width="1912" height="878" alt="Screenshot 2026-04-05 152207" src="https://github.com/user-attachments/assets/9f11d98f-776e-4fe3-8acd-dd0451692605" />
+<img width="1904" height="880" alt="Screenshot 2026-04-05 151646" src="https://github.com/user-attachments/assets/0d5f0f88-469a-4e38-ac8e-5437c442a5c6" />
+<img width="1900" height="868" alt="Screenshot 2026-04-05 151627" src="https://github.com/user-attachments/assets/d13a1b4b-161a-42b7-8dd7-a4719155de5b" />
+<img width="1910" height="878" alt="Screenshot 2026-04-05 152150" src="https://github.com/user-attachments/assets/b36ab4f8-08ee-4653-ae0a-13063f7c05be" />
+
+
 ---
 **Note**: Ensure both the backend and frontend servers are running simultaneously for the application to function correctly.
